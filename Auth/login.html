@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Login</title>
+  <script type="text/javascript" src="../js/jquery-3.6.0.min.js"></script>
+  <link rel="stylesheet" href="../css/style-login.css">
+  <script src="../js/path.js"></script>
+</head>
+
+
+<script type="text/javascript">
+  // var refreshToken = localStorage.getItem('refreshToken');
+  // if (refreshToken !== 'undefined' || refreshToken != null) {
+  //   window.open(PATH + "CMS/index.html", "_self");
+  // }
+  $(document).ready(function () {
+    var form = document.getElementById("form");
+    var email = document.getElementById("Email");
+    var pass = document.getElementById("Password");
+    var button = document.getElementById("btn");
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      $.post(ROOT + "auth/login",
+        JSON.stringify({
+          'email': email.value,
+          'password': pass.value,
+        })
+      ).done(function (data) {
+        var obj = JSON.parse(data);
+        var elm = $(`
+          <div class="alert success">
+          <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+          <div>Success!</div>
+          
+          </div >
+          `);
+        $('.notification').prepend(elm);
+        setTimeout(function () {
+          elm.fadeOut(1000);
+        }, 2500);
+        localStorage.setItem('token', obj.token);
+        localStorage.setItem('refreshToken', obj.refreshToken);
+
+        window.open(PATH + "CMS/index.html", "_self");
+      }).fail(async function (data) {
+        var obj = JSON.parse(data['responseText']);
+        var text = '';
+        obj.errors.forEach(element => {
+          text += element + "<br>";
+        });
+        var elm = $(`
+          <div class="alert">
+          <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+          <div>${text}</div>
+          
+          </div >
+          `);
+        $('.notification').prepend(elm);
+        setTimeout(function () {
+          elm.fadeOut(1000);
+        }, 2500);
+
+      });
+    })
+  })
+
+</script>
+
+<body>
+  <div class="notification">
+  </div>
+
+  <div class="container" id="container">
+    <div class="form-container sign-in-container">
+      <form action="#" id="form">
+        <h1>Sign in</h1>
+        <span>Use your account</span>
+        <input type="email" id="Email" placeholder="Email" />
+        <input type="password" id="Password" placeholder="Password" />
+        <a href="#">Forgot your password?</a>
+        <button>Sign In</button>
+      </form>
+    </div>
+    <div class="overlay-container">
+      <div class="overlay">
+        <div class="overlay-panel overlay-right">
+          <h1>OBRIEN</h1>
+          <p>Website for Shipper</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+</body>
+<footer class="text-center text-lg-start">
+
+</footer>
+
+</html>

@@ -1,0 +1,258 @@
+@import url('https://fonts.googleapis.com/css?family=Montserrat:400,800');
+
+.color {
+    color: #1f2937,
+        #1f2937ee,
+        #20698f,
+        #3a6073
+}
+
+:root {
+    --bg-color: #17171a;
+    --bd-color: rgb(34, 37, 49);
+    --bg-button-color: #323546;
+    --bg-button-blue-color: #20263e;
+    --text-color: #fff;
+    --text-primary-color: #6188ff;
+    --text-primary-hover-color: #98caff;
+    --text-secondary-color: #a1a7bb;
+    --text-down-color: #ea3943;
+    --text-up-color: #16c784;
+    --bg-tag-blue: #0099FF;
+    --bg-tag-green: #009933;
+    --bg-tag-yellow: #FF9900;
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px !important;
+    background-color: var(--bd-color);
+    /* background-image: url('https://readfreecomics.com/wp-content/themes/madara/images/bg-search.jpg'); */
+    min-width: 1300px;
+}
+
+.site-header a {
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+    padding-left: 2rem;
+}
+
+.wrapper {
+    max-width: 1140px;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* .main {
+    background-color: white;
+} */
+
+.logo {
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.site-header {
+    position: relative;
+    background-color: var(--bg-color);
+}
+
+.site-header__wrapper {
+    display: flex;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+
+/* .container {
+    background: linear-gradient(to top, #1f2937, #20698f);
+    padding: 3rem 8rem 0px;
+    height: 500px;
+} */
+
+body {
+    margin: 0px;
+}
+
+
+/* .main .tableWrapper {
+    background: var(--bg-color);
+    font-size: 1.4rem;
+    font-weight: 500;
+    margin-top: 2rem;
+    min-width: 1300px;
+} */
+.container {
+    padding: 30px 80px 0px;
+    height: 500px;
+    align-items: center;
+}
+
+table {
+    background-color: var(--bg-color);
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    width: 100%;
+    border-radius: 15px;
+}
+
+thead {
+    display: table-header-group;
+    vertical-align: middle;
+    border-color: inherit;
+}
+
+th {
+    /* background-color: #04AA6D; */
+    border-bottom: 1px solid rgb(255, 255, 255);
+}
+
+th,
+td {
+    padding: 15px;
+    text-align: center;
+
+}
+
+select {
+    margin: 15px;
+    height: 30px;
+    width: 120px;
+    border-radius: 15px;
+    border-color: #1f2937;
+    color: white;
+    text-align: center;
+    background-color: var(--bg-button-color);
+}
+
+.statusTag {
+    padding: 5px 10px;
+    border-radius: 7.5px;
+    color: white;
+    font-weight: bold;
+}
+
+.statusTag.ToShip {
+    background-color: var(--bg-tag-yellow);
+}
+
+.statusTag.ToReceive {
+    background-color: var(--bg-tag-green);
+}
+
+.statusTag.ToRate {
+    background-color: var(--bg-tag-blue);
+}
+
+.statusTag.Canceled {
+    background-color: #ea3943;
+}
+
+.statusTag.Completed {
+    background-color: var(--bg-tag-blue);
+}
+
+.pagination {
+    padding: 20px;
+    text-align: center;
+}
+
+.item-page {
+    color: var(--bg-color);
+    font-weight: bold;
+    border: 1px solid var(--bg-color);
+    width: 40px;
+    height: 40px;
+    transition: all 0.5s ease;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+.item-page.active {
+    background-color: white;
+    color: var(--bg-color);
+    font-weight: bold;
+    border: 1px solid var(--bg-color);
+}
+
+.item-page-disable {
+    color: var(--bg-color);
+    font-weight: bold;
+    border: 1px solid var(--bg-color);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+.item-page:hover {
+    background-color: white;
+    color: var(--bg-color);
+}
+
+@media (min-width: 600px) {
+    .site-header__wrapper {
+        display: flex;
+        align-items: center;
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+}
+
+.nav {
+    flex: 1;
+}
+
+@media (min-width: 600px) {
+    .nav__wrapper {
+        display: flex;
+    }
+}
+
+@media (max-width: 599px) {
+    .nav__wrapper {
+        position: absolute;
+        top: 100%;
+        right: 0;
+        left: 0;
+        z-index: -1;
+        background-color: #1f2937;
+        color: white;
+        visibility: hidden;
+        opacity: 0;
+        transform: translateY(-100%);
+        transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+    }
+
+    .nav__wrapper.active {
+        visibility: visible;
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.nav__item a {
+    display: flex;
+    padding: 1.5rem 1rem;
+}
+
+@media (min-width: 600px) {
+    .nav__item--end {
+        margin-left: auto;
+    }
+}
+
+.nav__toggle {
+    display: none;
+}
+
+@media (max-width: 599px) {
+    .nav__toggle {
+        display: flex;
+        left: 6rem;
+        top: 1rem;
+    }
+}

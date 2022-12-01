@@ -1,0 +1,241 @@
+.color {
+  color: #1f2937,
+    #1f2937ee,
+    #20698f,
+    #3a6073,
+    /* background-image: linear-gradient(-45deg, #57e2c2, #1f2937); */
+}
+
+:root {
+  --bk-color: #1f2937;
+  --bk-color-opacity: #1f2937ee;
+}
+
+* {
+  /* font-size: 15px!important; */
+  font-family: Helvetica, Arial, sans-serif !important;
+}
+
+body {
+  font-size: 14px !important;
+  width: 100%;
+  overflow: overlay;
+  background-image: url('https://readfreecomics.com/wp-content/themes/madara/images/bg-search.jpg');
+
+}
+
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 7.5px;
+}
+
+*::-webkit-scrollbar-track {
+  display: none;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-image: linear-gradient(0deg, #20698f, #1f2937);
+  border-radius: 5px;
+}
+
+/* - - - - - - - */
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.btn {
+  transition: all 0.5s ease !important;
+}
+
+
+.sidebar {
+  background-color: white;
+  overflow: auto;
+  width: 250px;
+  font-size: 15px;
+  font-weight: bold;
+  position: fixed;
+  padding: 0;
+  z-index: 10;
+  top: 0;
+  height: 100%;
+  transition: all 0.5s ease;
+  transform: translateX(-243px);
+  /* border-right: 10px solid #1f2937; */
+  background:
+    linear-gradient(white 0 0) padding-box,
+    /*this is your grey background*/
+    linear-gradient(0deg, #20698f, #1f2937) border-box;
+  border-right: 10px solid transparent;
+}
+
+
+/* alert  */
+.notification {
+  padding: 20px;
+  width: 20%;
+  right: 0;
+  transform-origin: right;
+  position: fixed;
+
+}
+
+.alert {
+  left: 0;
+  background-color: whitesmoke;
+  box-shadow: 0 0 10px 1px rgb(115 103 240 / 70%);
+  color: #1f2937;
+  width: 100%;
+  border-bottom: 5px solid red;
+  animation: append-animate .3s linear;
+  margin: 0;
+
+  /* -webkit-animation: 3s ease-in-out infinite;
+  animation: 3s ease-in-out infinite; */
+}
+
+.closebtn {
+  margin-left: 15px;
+  color: #1f2937;
+  font-weight: bold;
+  float: right;
+  font-size: larger;
+  line-height: 20px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.closebtn:hover {
+  color: black;
+}
+
+.alert.success {
+  border-bottom: 5px solid #04AA6D;
+}
+
+.alert.info {
+  border-bottom: 5px solid #2196F3;
+}
+
+.alert.warning {
+  border-bottom: 5px solid #ff9800;
+}
+
+/* - alert - */
+
+.sidebar:hover {
+  transform: translateX(0px);
+  border: none;
+  box-shadow: 0 0 10px 1px rgb(115 103 240 / 70%);
+}
+
+.sidebar a {
+  display: block;
+  padding: 16px 0;
+  text-decoration: none;
+  color: #20698f;
+}
+
+.sidebar a span {
+
+  padding: inherit;
+  padding-left: 15px;
+}
+
+.sidebar a.active {
+  background-color: #20698f;
+  color: white;
+}
+
+.sidebar a:hover:not(.active) {
+  transition: all 0.5s ease;
+  background-color: #20698f;
+  border-radius: 5px;
+  padding-left: 15px;
+  color: rgb(255, 255, 255);
+  box-shadow: 0 0 10px 1px rgb(115 103 240 / 70%);
+}
+
+.sidebar-item {
+  height: 83%;
+  overflow-y: scroll;
+  padding: 0 15px;
+}
+
+.sidebar-item::-webkit-scrollbar {
+  display: none;
+}
+
+.sidebar-item {
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
+}
+
+.sidebar-header {
+  padding: 20px 0;
+  font-size: 25px;
+  text-align: center;
+}
+
+.sidebar-footer {
+  padding-top: 15px;
+  font-size: 15px;
+  text-align: center;
+  color: #1f2937;
+}
+
+
+
+
+
+
+@keyframes fade {
+  from {
+    opacity: .4
+  }
+
+  to {
+    opacity: 1
+  }
+}
+
+
+@media (min-width: 300px) {
+  .cards {
+    grid-template-columns: repeat(2, 0.5fr);
+  }
+}
+
+@media (min-width: 800px) {
+  .cards {
+    grid-template-columns: repeat(3, 0.5fr);
+  }
+}
+
+@media (min-width: 1000px) {
+  .cards {
+    grid-template-columns: repeat(4, 0.5fr);
+  }
+}
+
+@media (min-width: 1200px) {
+  .cards {
+    grid-template-columns: repeat(5, 0.5fr);
+  }
+}
+
+@keyframes append-animate {
+  from {
+    transform: translateX(200%);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(0%);
+    opacity: 1;
+  }
+}
