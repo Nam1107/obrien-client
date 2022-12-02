@@ -117,15 +117,11 @@ td {
 
 }
 
-select {
-    margin: 15px;
-    height: 30px;
-    width: 120px;
-    border-radius: 15px;
-    border-color: #1f2937;
+button {
+    padding: 5px 10px;
+    border-radius: 7.5px;
     color: white;
-    text-align: center;
-    background-color: var(--bg-button-color);
+    font-weight: bold;
 }
 
 .statusTag {
@@ -191,6 +187,47 @@ select {
 .item-page:hover {
     background-color: white;
     color: var(--bg-color);
+}
+
+select {
+    margin: 0px 15px 7.5px;
+    height: 30px;
+    width: 120px;
+    border-radius: 15px;
+    border-color: #1f2937;
+    color: white;
+    text-align: center;
+    background-color: var(--bg-button-color);
+}
+
+label {
+    color: white;
+    font-weight: bold;
+    font-size: 12px;
+}
+
+.from-datepicker {
+    margin: 0px 15px 7.5px;
+    height: 30px;
+    width: 120px;
+    border-radius: 15px;
+    border: 0;
+    color: white;
+    text-align: center;
+    background-color: var(--bg-button-color);
+}
+
+.btn {
+    padding: 5px 10px;
+    border-radius: 7.5px;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+
+}
+
+.btn.btn-info {
+    background-color: var(--bg-tag-blue);
 }
 
 @media (min-width: 600px) {

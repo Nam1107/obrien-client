@@ -1,4 +1,7 @@
 function pagination(curPages, totalPages) {
+  if (totalPages <= 0) {
+    return;
+  }
   const delta = 1;
   var pageLeft = curPages - delta;
   var pageRight = curPages + delta;
