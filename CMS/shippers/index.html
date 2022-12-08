@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Obrien</title>
+    <base href="http://localhost/cocomic/">
+    <script type="text/javascript" src="js/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
+    <!-- <link href="/cocomic/css/bootstrap.min.css" rel="stylesheet"> -->
+    <!-- <script type="text/javascript" src="/cocomic/js/bootstrap.bundle.min.js"></script> -->
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/style-main.css">
+    <script src="js/path.js"></script>
+    <script src="js/pagination.js"></script>
+    <script src="js/authLogin.js"></script>
+    <script src="js/authUser.js"></script>
+</head>
+
+<script>
+    fetch("includes/obrien-header.html")
+        .then(response => {
+            return response.text()
+        })
+        .then(data => {
+            $('#header-tag').html(data);
+        });
+</script>
+<script>
+    var curPage = 1;
+    var totalPage = 10;
+    var perPage = 5;
+    var token = localStorage.getItem('token');
+    $(document).ready(function () {
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+        getListShipper();
+    })
+    function LoadPage(newPage) {
+        curPage = newPage;
+
+        getListShipper();
+
+        window.history.pushState(null, document.title, PATH + 'cms/orders/index.html?page=' + curPage);
+    }
+    function getListShipper() {
+        $.ajax({
+            // url: ROOT + `test/test`,
+            url: ROOT + `user/listUser?page=${curPage}&perPage=${perPage}&email=&sortBy=email&sortType=DESC&role=ROLE_SHIPPER`,
+            type: 'GET',
+            headers: {
+                "Authorization": 'Bearer ' + token,
+            },
+            async: false
+        }).done(function (data) {
+
+            var obj = JSON.parse(data);
+            var userArr = obj.obj;
+            totalPage = obj.numOfPage;
+            page = obj.page
+            $('#UserManagement').html('');
+            $('#tag-notify').html('');
+            for (i = 0; i < userArr.length; i++) {
+                var shipperStr = `
+                              <tr>
+                                <td>${i + 1 + (page - 1) * perPage}</td>
+                                <td>${userArr[i].ID}</td>
+                                
+                                <td>
+                                    <div class="product-img" ><img src="${userArr[i].avatar}" alt=""></div>
+                                    <div style = "padding: 10px">${userArr[i].name}</div>
+                                    </td>
+                                <td>${userArr[i].email}</td>
+                                <td>${userArr[i].Phone}</td>
+                                <td>
+                                    
+                                    <a type="button" href="cms/shippers/detail.html?shipperID=${userArr[i].ID}" class="btn btn-info" >More</a>
+                                    
+                                </td>
+                              </tr>
+                            `;
+                $('#UserManagement').append(
+                    shipperStr
+                )
+            }
+            if (userArr.length <= 0) {
+                $('#tag-notify').html(
+
+                    `<div style="padding: 20px;
+        text-align: center;font-weight: bold;color: white;font-size: large;">Nothing to show</div>`
+                )
+            }
+            if (curPage > totalPage) {
+                curPage = totalPage;
+            }
+            $('#pagination').empty();
+            pagination(curPage, totalPage);
+
+        }).fail(async function (data) {
+            var obj = JSON.parse(data['responseText']);
+            console.log(obj);
+        });
+    }
+
+
+    function getShipper(orderID) {
+        window.open(PATH + `cms/shippers/detail.html?shipperID=${orderID}`, "_self");
+    }
+
+</script>
+<div id="header-tag">
+
+</div>
+
+<body>
+    <div class="container">
+        <div class="tag-label">
+            List Shipper
+        </div>
+        <table class="tableWrapper">
+            <thead>
+                <tr>
+                    <th>STT</th>
+                    <th>ID</th>
+                    <th>Avatar</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th colspan="2">Option</th>
+                </tr>
+            </thead>
+            <div>
+                <tbody id="UserManagement">
+                </tbody>
+            </div>
+        </table>
+
+        <div class="pagination">
+
+            <div id="pagination">
+                ...
+            </div>
+        </div>
+        <div id="tag-notify"></div>
+
+    </div>
+
+</body>
+
+<footer class="text-center text-lg-start">
+
+</footer>
+
+</html>

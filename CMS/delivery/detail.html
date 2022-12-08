@@ -30,38 +30,38 @@
         });
 </script>
 <script>
-    var orderID = '';
+    var deliveryID = '';
     var token = localStorage.getItem('token');
     $(document).ready(function () {
         const queryString = window.location.search;
         const urlParams = new URLSearchParams(queryString);
-        orderID = urlParams.get('orderID');
-        getDetailOrder();
+        deliveryID = urlParams.get('deliveryID');
+        getDetailDelivery();
     })
 
-    function getDetailOrder() {
+    function getDetailDelivery() {
         $.ajax({
-            url: ROOT + `order/adminGetOrder/${orderID}`,
-            // url: ROOT_test,
+            // url: ROOT + `delivery/getDetail/${deliveryID}`,
+            url: ROOT_test,
             type: 'GET',
             headers: {
                 "Authorization": 'Bearer ' + token,
             },
             async: false
         }).done(function (data) {
-            // var data1 = `{"obj":{"ID":14,"userID":15,"note":"h\u00e0ng d\u1ec5 d\u1eadp","phone":343414908,"address":"H\u1ea3i Ph\u00f2ng","status":"To Receive","createdAt":"2022-12-02 19:28:01","total":"113","numOfProduct":1,"user":{"ID":15,"email":"quang@gmail.com","password":"$2y$10$7bu8L7nKWsoLE2k6zy0pRuXVtemYmnvgjYByT0mA5Ndrc4oRdhNGS","role":3,"phone":null,"firstName":"Ph\u1ea1m ","lastName":"Quang","name":"Ph\u1ea1m  Quang","avatar":"https:\/\/firebasestorage.googleapis.com\/v0\/b\/obrien-1482c.appspot.com\/o\/files%2Fdipper.png?alt=media&token=475846a9-2785-4aa3-8c9b-0af5952c38a0","createdAt":"2022-11-27 12:43:34","updatedAt":"2022-11-28 23:11:24"},"shipping":[{"description":"Order has been created","createdAt":"2022-12-02 19:28:02"},{"description":"Order has been received","createdAt":"2022-12-02 19:31:25"}],"product":[{"ID":20,"image":"https:\/\/firebasestorage.googleapis.com\/v0\/b\/obrien-1482c.appspot.com\/o\/files%2Fapple.jpg?alt=media&token=6e82352e-db6a-4354-812e-0054dfbf1edb","name":"Apple","unitPrice":113,"quantity":1}],"delivery":[{"id":106,"order_id":14,"departed_date":null,"delivered_date":null,"status":null,"description":null,"shipper":{"ID":4,"email":"user2@gmail.com","phone":"123456","firstName":"HAHA","lastName":"123","name":"HAHA 123","avatar":"","role":"ROLE_SHIPPER"},"created_by":{"ID":4,"email":"user2@gmail.com","phone":"123456","firstName":"HAHA","lastName":"123","name":"HAHA 123","avatar":"","role":"ROLE_SHIPPER"}},{"id":105,"order_id":14,"departed_date":null,"delivered_date":null,"status":null,"description":null,"shipper":{"ID":4,"email":"user2@gmail.com","phone":"123456","firstName":"HAHA","lastName":"123","name":"HAHA 123","avatar":"","role":"ROLE_SHIPPER"},"created_by":{"ID":4,"email":"user2@gmail.com","phone":"123456","firstName":"HAHA","lastName":"123","name":"HAHA 123","avatar":"","role":"ROLE_SHIPPER"}}]}}`;
-            var obj = JSON.parse(data);
+            var data1 = `{"id":105,"created_date":"2022-12-06 10:43:50","delivered_date":"2022-12-06 10:43:21","status":"Processing","description":null,"shipper":{"ID":4,"email":"user2@gmail.com","phone":"123456","firstName":"HAHA","lastName":"123","name":"HAHA 123","avatar":"https:\/\/firebasestorage.googleapis.com\/v0\/b\/obrien-1482c.appspot.com\/o\/files%2Fdipper.png?alt=media&token=339fd039-592e-4f53-9f4d-cf9280b63983","role":"ROLE_SHIPPER"},"admin":{"ID":4,"email":"user2@gmail.com","phone":"123456","firstName":"HAHA","lastName":"123","name":"HAHA 123","avatar":"https:\/\/firebasestorage.googleapis.com\/v0\/b\/obrien-1482c.appspot.com\/o\/files%2Fdipper.png?alt=media&token=339fd039-592e-4f53-9f4d-cf9280b63983","role":"ROLE_SHIPPER"},"order":{"ID":14,"userID":15,"note":"h\u00e0ng d\u1ec5 d\u1eadp","phone":343414908,"address":"H\u1ea3i Ph\u00f2ng","status":"To Receive","createdAt":"2022-12-02 19:28:01","total":"113","numOfProduct":1,"user":{"ID":15,"email":"quang@gmail.com","password":"$2y$10$7bu8L7nKWsoLE2k6zy0pRuXVtemYmnvgjYByT0mA5Ndrc4oRdhNGS","role":3,"phone":null,"firstName":"Ph\u1ea1m ","lastName":"Quang","name":"Ph\u1ea1m  Quang","avatar":"https:\/\/firebasestorage.googleapis.com\/v0\/b\/obrien-1482c.appspot.com\/o\/files%2Fdipper.png?alt=media&token=475846a9-2785-4aa3-8c9b-0af5952c38a0","createdAt":"2022-11-27 12:43:34","updatedAt":"2022-11-28 23:11:24"},"shipping":[{"description":"Order has been created","createdAt":"2022-12-02 19:28:02"},{"description":"Order has been received","createdAt":"2022-12-02 19:31:25"}],"product":[{"ID":20,"image":"https:\/\/firebasestorage.googleapis.com\/v0\/b\/obrien-1482c.appspot.com\/o\/files%2Fapple.jpg?alt=media&token=6e82352e-db6a-4354-812e-0054dfbf1edb","name":"Apple","unitPrice":113,"quantity":1}]}}`;
+            var obj = JSON.parse(data1);
             obj = obj.obj;
             var productArr = obj.product;
             var user = obj.user;
             var shipping = obj.shipping;
             var delivery = obj.delivery;
             var status = obj.status.replace(/ /g, '');
-            $('#order-id').html(`${obj.ID}`);
-            $('#order-status').html(`<span class="statusTag ${status}"> ${obj.status}</span>`);
+            $('#delivery-id').html(`${obj.ID}`);
+            $('#delivery-status').html(`<span class="statusTag ${status}"> ${obj.status}</span>`);
             // 
             $('#order-total').html(`${obj.total}`);
-            $('#orderDetail').html(
+            $('#delivery-detail').html(
                 `
                 <p>
                         <span>Name:</span>
@@ -126,10 +126,10 @@
                                 <td>${delivery[i].id}</td>
                                 <td>${delivery[i].departed_date}</td>
                                 <td>${delivery[i].delivered_date}</td>
-                                <td><span class="statusTag ${delivery[i].status}">${delivery[i].status}</span></td>
+                                <td>${delivery[i].status}</td>
                                 <td>${delivery[i].description}</td>
                                 <td>
-                                    <button class="btn btn-info" onclick="getShipper(${delivery[i].shipper_id})" >Show Shipper</button>
+                                    <button class="btn btn-info" onclick="getShipper(${delivery[i].shipper.ID})" >Show Shipper</button>
                                 </td>
                               </tr>
                             `;
@@ -142,8 +142,8 @@
             console.log(obj);
         });
     }
-    function getShipper(id) {
-        window.open(PATH + `cms/shippers/detail.html?shipperID=${id}`, "_self");
+    function getShipper(orderID) {
+        window.open(PATH + `cms/shippers/detail.html?shipperID=${orderID}`, "_self");
     }
 
 
@@ -161,11 +161,11 @@
         <div class="tag-detail">
             <div class="tag-label" style="display: flex;">
                 <div style="width: 50%;">
-                    Order Information
+                    Delivery Information
                 </div>
                 <div style="width: 50%;text-align-last: right;">
-                    OREDER ID: <span style="color:red;margin-right: 10px;" id="order-id">Undefined</span> |
-                    <span id="order-status"></span>
+                    DELIVERY ID: <span style="color:red;margin-right: 10px;" id="delivery-id">Undefined</span> |
+                    <span id="delivery-status"></span>
                     <!-- <span class="statusTag ToReceive">To Receive</span> -->
                 </div>
             </div>
@@ -173,7 +173,7 @@
             <div style="border-bottom: solid 1px white;width: 100%;"></div>
             <br>
             <div class="" style="display:flex">
-                <div id="orderDetail" style="width:30%;align-self: center;padding-left: 50px;">
+                <div id="delivery-detail" style="width:30%;align-self: center;padding-left: 50px;">
 
 
                     <p>
