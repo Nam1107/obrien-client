@@ -334,8 +334,8 @@ a {
 
 .loading_anim {
     width: 500px;
-    color: #20698f;
-    background-color: white;
+    color: #ffffff;
+    background-color: var(--bg-color);
     font-size: 20px;
     font-weight: bold;
     padding: 30px;
@@ -400,6 +400,55 @@ a {
     color: #fff;
     text-decoration: none;
     cursor: pointer;
+}
+
+/* alert  */
+.notification {
+    padding: 20px;
+    width: 20%;
+    top: 0;
+    right: 40px;
+    position: fixed;
+    z-index: 10;
+
+}
+
+.alert {
+    left: 0;
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    background: linear-gradient(to right, #FF4B2B, #FF416C);
+    animation: append-animate .3s linear;
+    font-weight: bold;
+    font-size: 15px;
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25),
+        0 10px 10px rgba(0, 0, 0, 0.22);
+    z-index: 15;
+
+}
+
+
+.closebtn {
+    margin-left: 15px;
+    color: white;
+    font-weight: bold;
+    float: right;
+    height: 100%;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+
+.closebtn:hover {
+    color: black;
+    transform: rotate(900deg) scale(2);
+}
+
+.alert.success {
+    background: linear-gradient(to right, #04AA6D, #27cc8f);
+    /* border-bottom: 5px solid #04AA6D; */
 }
 
 @media (min-width: 600px) {

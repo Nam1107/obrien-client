@@ -21,13 +21,6 @@
 </head>
 
 <script>
-    // fetch("CMS/orders/list-order.html")
-    //     .then(response => {
-    //         return response.text()
-    //     })
-    //     .then(data => {
-    //         $('.container').html(data);
-    //     });
     fetch("includes/obrien-header.html")
         .then(response => {
             return response.text()
@@ -52,11 +45,29 @@
         var choose = document.getElementById("date-picker").value;
         var date = new Date();
         var time = date.getTime();
+        var typingTimer;
+        var doneTypingInterval = 1000;
+        var searchInput = $('#myInput');
         var startTime = new Date(time - 24 * 60 * 60 * 1000 * choose);
         var endTime = new Date(time + 24 * 60 * 60 * 1000);
         startDate = currentTime(startTime);
         endDate = currentTime(endTime);
         getListOrder();
+        searchInput.on('keyup', function () {
+            var orderID = $('#myInput').val();
+            if (orderID == '') {
+                return;
+            }
+            $('#Order-Management').html('');
+
+            $('#pagination').html(``);
+            clearTimeout(typingTimer);
+            typingTimer = setTimeout(getListOrder, doneTypingInterval);
+        });
+        searchInput.on('keydown', function () {
+            clearTimeout(typingTimer);
+        });
+        // getListOrder();
     })
     function LoadPage(newPage) {
         curPage = newPage;
@@ -65,8 +76,18 @@
 
     }
     function getListOrder() {
+        if (curPage <= 0) {
+            curPage = 1;
+        }
+        $("#loading").show();
+        $("#loading_anim").html(
+            `
+                <div style="font-size:30px">Loading</div>
+                `
+        );
+        var orderID = $('#myInput').val();
         $.ajax({
-            url: ROOT + `order/adminListOrder?page=${curPage}&perPage=${perPage}&status=${status}&startDate=${startDate}&endDate=${endDate}`,
+            url: ROOT + `order/adminListOrder?page=${curPage}&perPage=${perPage}&status=${status}&startDate=${startDate}&endDate=${endDate}&orderID=${orderID}`,
             type: 'GET',
             headers: {
                 "Authorization": 'Bearer ' + token,
@@ -92,7 +113,7 @@
                                 <td>${orderArr[i].total}</td>
                                 <td>${orderArr[i].numOfProduct}</td>
                                 <td>
-                                    <button class="btn btn-info" onclick="getOrder(${orderArr[i].ID})" >More</button>
+                                    <a class="btn btn-info" href="cms/orders/detail.html?orderID=${orderArr[i].ID}" >Show Order</a>
                                 </td>
                               </tr>
                             `;
@@ -112,20 +133,23 @@
             }
             $('#pagination').empty();
             pagination(curPage, totalPage);
+            setTimeout(function () {
+                $("#loading").hide();
+            }, 1000);
+
 
         }).fail(async function (data) {
             var obj = JSON.parse(data['responseText']);
-            console.log(obj);
+            setTimeout(function () {
+                $("#loading").hide();
+            }, 1000);
+            failNotify(obj['errors']);
         });
     }
     function selectStatus() {
         curPage = 1;
         status = document.getElementById("status").value;
         getListOrder();
-    }
-
-    function getOrder(orderID) {
-        window.open(PATH + `cms/orders/detail.html?orderID=${orderID}`, "_self");
     }
 
     function DatePicker() {
@@ -140,30 +164,60 @@
         getListOrder();
     }
 
+    function failNotify(errors) {
+        var elm = $(`
+          <div class="alert">
+          <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+          <div>${errors}</div>
+          
+          </div >
+          `);
+        $('.notification').prepend(elm);
+        setTimeout(function () {
+            elm.fadeOut(1000);
+        }, 2500);
+    }
+
 </script>
 <div id="header-tag">
 
 </div>
 
 <body>
+    <div class="notification">
+    </div>
+    <div class="loading" id="loading">
+        <div class="loading_anim" id="loading_anim">
+            <div style="font-size:30px">Loading...</div>
+        </div>
+    </div>
     <div class="container">
-        <label for="">Status</label>
-        <select name="status" onchange="selectStatus()" id="status">
-            <option value="">All</option>
-            <option value="To Ship">To Ship</option>
-            <option value="To Receive">To Receive</option>
-            <option value="To Rate">To Rate</option>
-            <option value="Completed">Completed</option>
-            <option value="Canceled">Canceled</option>
-        </select>
-        <br>
-        <label for="">Datetime</label>
-        <select name="date-picker" onchange="DatePicker()" id="date-picker">
-            <option value="18250">All time</option>
-            <option value="1">Last 24h</option>
-            <option value="7">Last 7 days</option>
-            <option value="28">Last 4 weeks</option>
-        </select>
+        <div style="display: flex;">
+            <div style="width:50%">
+                <label for="">Status</label>
+                <select name="status" onchange="selectStatus()" id="status">
+                    <option value="">All</option>
+                    <option value="To Ship">To Ship</option>
+                    <option value="To Receive">To Receive</option>
+                    <option value="To Rate">To Rate</option>
+                    <option value="Completed">Completed</option>
+                    <option value="Canceled">Canceled</option>
+                </select>
+                <br>
+                <label for="">Datetime</label>
+                <select name="date-picker" onchange="DatePicker()" id="date-picker">
+                    <option value="18250">All time</option>
+                    <option value="1">Last 24h</option>
+                    <option value="7">Last 7 days</option>
+                    <option value="28">Last 4 weeks</option>
+                </select>
+            </div>
+            <div style="width:50%;text-align: right;align-self: end;">
+                <span>Search Order</span>
+                <input id="myInput" class="" style="margin-left: 50px;" type="text" placeholder="ID">
+            </div>
+        </div>
+
         <table class="tableWrapper">
             <thead>
                 <tr>
@@ -182,14 +236,13 @@
                 </tbody>
             </div>
         </table>
-
+        <div id="tag-notify"></div>
         <div class="pagination">
 
             <div id="pagination">
-                ...
             </div>
         </div>
-        <div id="tag-notify"></div>
+
 
     </div>
 

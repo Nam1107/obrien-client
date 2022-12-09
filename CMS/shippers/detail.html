@@ -36,22 +36,35 @@
     var totalPageDelivery = 10;
     var totalPageProcessing = 10;
     var status = '';
-    var perPage = 15;
+    var perPage = 5;
     var orderBy = 'ASC';
     var startDate = '1999-12-30';
     var endDate = '2100-12-30';
     var token = localStorage.getItem('token');
 
+    $(document).ready(function () {
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+        shipperID = urlParams.get('shipperID');
+        status = document.getElementById("status").value;
+        var choose = document.getElementById("date-picker").value;
+        var date = new Date();
+        var time = date.getTime();
+        var startTime = new Date(time - 24 * 60 * 60 * 1000 * choose);
+        var endTime = new Date(time + 24 * 60 * 60 * 1000);
 
+        startDate = currentTime(startTime);
+        endDate = currentTime(endTime);
+        getDetailShipper();
+        getListDelivery();
+        getListProcessing();
+    })
 
     function openModel() {
         var modal = document.getElementById("myModal");
         $('#modal-container').html('');
-        // var btn = document.getElementById("myBtn");
         var span = document.getElementById("close");
-        // btn.onclick = function () {
         modal.style.display = "block";
-        // }
         span.onclick = function () {
             modal.style.display = "none";
         }
@@ -81,35 +94,27 @@
             </div>
         `);
     }
-    function getDetail(id) {
-        openModel();
+    async function getDetail(id) {
+        $(".loading").show();
+        $(".loading_anim").html(
+            `
+                <div style="font-size:30px">Loading</div>
+                `
+        );
         localStorage.setItem('deliveryID', id);
         $('#modal-header').html('Detail Delivery');
-        fetch("cms/delivery/model/detail.html")
+        await fetch("cms/delivery/model/detail.html")
             .then(response => {
                 return response.text()
             })
             .then(data => {
                 $('#modal-content').html(data);
             });
-
+        $(".loading").hide();
+        successNotify();
+        openModel();
     }
-    $(document).ready(function () {
-        const queryString = window.location.search;
-        const urlParams = new URLSearchParams(queryString);
-        shipperID = urlParams.get('shipperID');
-        status = document.getElementById("status").value;
-        var choose = document.getElementById("date-picker").value;
-        var date = new Date();
-        var time = date.getTime();
-        var startTime = new Date(time - 24 * 60 * 60 * 1000 * choose);
-        var endTime = new Date(time + 24 * 60 * 60 * 1000);
-        startDate = currentTime(startTime);
-        endDate = currentTime(endTime);
-        getDetailShipper();
-        getListDelivery();
-        getListProcessing();
-    })
+
     function LoadPage(newPage) {
         curPage = newPage;
 
@@ -167,6 +172,7 @@
         }).fail(async function (data) {
             var obj = JSON.parse(data['responseText']);
             console.log(obj);
+
         });
     }
 
@@ -311,7 +317,12 @@
         // }
         // console.log(text);
 
-
+        $(".loading").show();
+        $(".loading_anim").html(
+            `
+                <div style="font-size:30px">Loading</div>
+                `
+        );
         var reason = $('#reason').val();
 
         $.ajax({
@@ -324,20 +335,34 @@
                 'description': reason
             }),
             async: false
-        }).done(function (data) {
+        }).done(async function (data) {
 
             var obj = JSON.parse(data);
             var modal = document.getElementById("myModal");
             modal.style.display = 'none';
-            getListDelivery();
-            getListProcessing();
+            await getListDelivery();
+            await getListProcessing();
+            $(".loading").hide();
+            successNotify();
+
         }).fail(async function (data) {
+            $(".loading").hide();
             var obj = JSON.parse(data['responseText']);
-            alert(obj['errors']);
+            failNotify(obj['errors']);
         });
 
     }
     function SuccessDelivery(id) {
+        let text = "Order has been delivered";
+        if (confirm(text) == false) {
+            return;
+        }
+        $(".loading").show();
+        $(".loading_anim").html(
+            `
+                <div style="font-size:30px">Loading</div>
+                `
+        );
         $.ajax({
             url: ROOT + `delivery/completeDelivery/${id}`,
             type: 'PUT',
@@ -348,12 +373,16 @@
         }).done(function (data) {
 
             var obj = JSON.parse(data);
+
             getListDelivery();
             getListProcessing();
+            $(".loading").hide();
+            successNotify();
 
         }).fail(async function (data) {
             var obj = JSON.parse(data['responseText']);
-            alert(obj['errors']);
+            $(".loading").hide();
+            failNotify(obj['errors']);
         });
     }
     function LoadPageProcessing(newPage) {
@@ -458,14 +487,40 @@
         }
     }
 
-
+    function successNotify() {
+        var elm = $(`
+          <div class="alert success">
+          <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+          <div>Success!</div>
+          
+          </div >
+          `);
+        $('.notification').prepend(elm);
+        setTimeout(function () {
+            elm.fadeOut(1000);
+        }, 2500);
+    }
+    function failNotify(errors) {
+        var elm = $(`
+          <div class="alert">
+          <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+          <div>${errors}</div>
+          
+          </div >
+          `);
+        $('.notification').prepend(elm);
+        setTimeout(function () {
+            elm.fadeOut(1000);
+        }, 2500);
+    }
 </script>
 <div id="header-tag">
 
 </div>
 
 <body>
-
+    <div class="notification">
+    </div>
     <div id="myModal" class="modal">
         <div class="modal-container">
             <div class="modal-header">

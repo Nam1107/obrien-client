@@ -1,7 +1,9 @@
 <script>
     var token = localStorage.getItem('token');
     var deliveryID = localStorage.getItem('deliveryID');
+
     getDetailDelivery();
+
     function getDetailDelivery() {
         $.ajax({
             url: ROOT + `delivery/getDetail/${deliveryID}`,
