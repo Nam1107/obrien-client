@@ -45,12 +45,12 @@
 
 
     //user is "finished typing," do something
-    function doneTyping() {
-        var orderID = $('#myInput').val();
-        // console.log($('#myInput').val());
-        getListOrder(orderID);
+    // function doneTyping() {
+    //     var orderID = $('#myInput').val();
+    //     // console.log($('#myInput').val());
+    //     getListOrder(orderID);
 
-    }
+    // }
     $(document).ready(function () {
         const queryString = window.location.search;
         const urlParams = new URLSearchParams(queryString);
@@ -58,13 +58,18 @@
         var time = date.getTime();
         var endTime = new Date(time + 24 * 60 * 60 * 1000);
         var typingTimer;
-        var doneTypingInterval = 2000;
+        var doneTypingInterval = 1000;
         var searchInput = $('#myInput');
         endDate = currentTime(endTime);
         getListShipper();
 
 
         searchInput.on('keyup', function () {
+            var orderID = $('#myInput').val();
+            if (orderID == '') {
+                return;
+            }
+            $('#Order-Management').html('');
             $('#tag-order-notify').html(`
 
                     <div style="padding: 20px;
@@ -73,7 +78,7 @@
             
             `);
             clearTimeout(typingTimer);
-            typingTimer = setTimeout(doneTyping, doneTypingInterval);
+            typingTimer = setTimeout(getListOrder, doneTypingInterval);
         });
         searchInput.on('keydown', function () {
             clearTimeout(typingTimer);
@@ -103,14 +108,14 @@
                 <tr>
                                 <td>${i + 1}</td>
                                 <td>${delivery[i].id}</td>
-                                <td><span class="statusTag ${delivery[i].status}">${delivery[i].status}</span></td>                               
+                                <td style="width:100px"><span class="statusTag ${delivery[i].status}">${delivery[i].status}</span></td>                               
                                 <td style="text-align: left;">
                                     <p>OrderID: <span style="color:red;margin-right: 10px;" >${delivery[i].order.ID}</span> </p>
                                     <p>Phone: ${delivery[i].order.phone}</p>
                                     <p>Address: ${delivery[i].order.address}</p>
                                     <p>Total: ${delivery[i].order.total}</p>
                                 </td>
-                                <td>
+                                <td style="width:100px">
                                     <a  type="button" class="btn btn-info" href="cms/orders/detail.html?orderID=${delivery[i].order.ID}">Show Order</a>
                                 </td>
                               </tr>
@@ -183,7 +188,7 @@
             for (i = 0; i < userArr.length; i++) {
                 var shipperStr = `
                               <tr>
-                                <td>${userArr[i].ID}</td>
+                                <td>ID:${userArr[i].ID}</td>
                                 <td>
                                     ${userArr[i].name}
                                 </td>
@@ -202,7 +207,8 @@
             console.log(obj);
         });
     }
-    function getListOrder(orderID = '') {
+    function getListOrder() {
+        var orderID = $('#myInput').val();
         $.ajax({
             url: ROOT + `order/adminListOrder?page=1&perPage=1000&status=To Ship&startDate=2000-1-1&endDate=${endDate}&orderID=${orderID}`,
             type: 'GET',
@@ -232,16 +238,16 @@
                 var statusTag = orderArr[i].status.replace(/ /g, '');
                 var order = `
                             <tr>
-                                <td>${i + 1}</td>
+                                
                                 <td>${orderArr[i].ID}</td>
-                                <td><span class="statusTag ${statusTag}">${orderArr[i].status}</span></td>
+                                <td style="width:100px"><span class="statusTag ${statusTag}">${orderArr[i].status}</span></td>
                                 <td>${orderArr[i].name}</td>
-                                <td>${orderArr[i].address}</td>
+                                <td style="width:200px">${orderArr[i].address}</td>
                                 <td>${orderArr[i].total}</td>
                                 <td>${orderArr[i].numOfProduct}</td>
-                                <td>
+                                <td style="width:150px">
                                     <a type="button" href="cms/orders/detail.html?orderID=${orderArr[i].ID}" class="btn btn-info" >More</a>
-                                    <button  type="button" class="btn btn-select" onclick="">Add</button>
+                                    <button  type="button" class="btn btn-select" onclick="createDelivery(${orderArr[i].ID})">Add</button>
                                 </td>
                               </tr>
                             `;
@@ -258,7 +264,30 @@
         });
     }
     function createDelivery(id) {
+        if (shipperID == null) {
+            alert('Please select shipper first');
+            return;
+        }
+        $.ajax({
+            url: ROOT + `delivery/createDelivery`,
+            type: 'POST',
+            headers: {
+                "Authorization": 'Bearer ' + token,
+            },
+            data: JSON.stringify({
+                'order_id': id,
+                'shipper_id': shipperID,
+            }),
+            async: false
+        }).done(function (data) {
+            var obj = JSON.parse(data);
+            getListOrder();
+            getListDelivery();
 
+        }).fail(async function (data) {
+            var obj = JSON.parse(data['responseText']);
+            alert(obj);
+        });
     }
 
 
@@ -313,7 +342,7 @@
 
                 </div>
 
-                <div style="width:59%;display:flex;    flex-wrap: wrap;">
+                <div style="width:55%;display:flex;    flex-wrap: wrap;">
                     <div class="tag-label" style="width: 100%;">
                         Select Shipper
                     </div>
@@ -362,7 +391,7 @@
                 text-align: center;font-weight: bold;color: white;font-size: large;">Please select shipper first</div>
                 </div>
             </div>
-            <div style="width: 59%;">
+            <div style="width: 55%;">
                 <div class="tag-label">
                     List Order
                 </div>
@@ -373,7 +402,6 @@
                 <table class="tableWrapper">
                     <thead>
                         <tr>
-                            <th>STT</th>
                             <th>ID</th>
                             <th>Status</th>
                             <th>Name</th>

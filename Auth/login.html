@@ -45,7 +45,7 @@
         localStorage.setItem('token', obj.token);
         localStorage.setItem('refreshToken', obj.refreshToken);
 
-        window.open(PATH + "CMS/index.html", "_self");
+        window.open(PATH + "CMS/orders/index.html", "_self");
       }).fail(async function (data) {
         var obj = JSON.parse(data['responseText']);
         var text = '';
