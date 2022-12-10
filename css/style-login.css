@@ -1,5 +1,28 @@
 @import url('https://fonts.googleapis.com/css?family=Montserrat:400,800');
 
+.color {
+    color: #1f2937,
+        #1f2937ee,
+        #20698f,
+        #3a6073
+}
+
+:root {
+    --bg-color: #17171a;
+    --bd-color: rgb(34, 37, 49);
+    --bg-button-color: #323546;
+    --bg-button-blue-color: #20263e;
+    --text-color: #fff;
+    --text-primary-color: #6188ff;
+    --text-primary-hover-color: #98caff;
+    --text-secondary-color: #a1a7bb;
+    --text-down-color: #ea3943;
+    --text-up-color: #16c784;
+    --bg-tag-blue: #0099FF;
+    --bg-tag-green: #009933;
+    --bg-tag-yellow: #FF9900;
+    --bg-tag-red: #ea3943;
+}
 
 * {
     box-sizing: border-box;
@@ -14,6 +37,7 @@ body {
     height: 100vh;
     font-size: 14px !important;
     margin: -20px 0 50px;
+    /* background-color: var(--bg-color); */
     background-image: url('https://readfreecomics.com/wp-content/themes/madara/images/bg-search.jpg');
 }
 

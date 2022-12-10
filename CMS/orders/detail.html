@@ -17,7 +17,7 @@
     <script src="js/path.js"></script>
     <script src="js/pagination.js"></script>
     <script src="js/authLogin.js"></script>
-    <script src="js/authUser.js"></script>
+    <script src="js/authAdmin.js"></script>
 </head>
 
 <script>
@@ -59,6 +59,9 @@
             var status = obj.status.replace(/ /g, '');
             $('#order-id').html(`${obj.ID}`);
             $('#order-status').html(`<span class="statusTag ${status}"> ${obj.status}</span>`);
+            if (status == 'ToShip') {
+                $('#cancel-btn').html(`<button onclick="modalCancel(${obj.ID})" class="btn btn-red">Cancel Order</button>`);
+            }
             // 
             $('#order-total').html(`${obj.total}`);
             $('#orderDetail').html(
@@ -129,7 +132,7 @@
                                 <td><span class="statusTag ${delivery[i].status}">${delivery[i].status}</span></td>
                                 <td>${delivery[i].description}</td>
                                 <td>
-                                    <button class="btn btn-info" onclick="getShipper(${delivery[i].shipper_id})" >Show Shipper</button>
+                                    <a class="btn btn-info" href="cms/shippers/detail.html?shipperID=${delivery[i].shipper_id}" >Show Shipper</a>
                                 </td>
                               </tr>
                             `;
@@ -142,11 +145,104 @@
             console.log(obj);
         });
     }
-    function getShipper(id) {
-        window.open(PATH + `cms/shippers/detail.html?shipperID=${id}`, "_self");
+    function openModel() {
+        var modal = document.getElementById("myModal");
+        $('#modal-container').html('');
+        var span = document.getElementById("close");
+        modal.style.display = "block";
+        span.onclick = function () {
+            modal.style.display = "none";
+        }
+        window.onclick = function (event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    }
+    function modalCancel(id) {
+
+        $('#modal-header').html('Delivery Fail');
+        $("#modal-content").html(` 
+       
+            <label for="" style="padding-right:50px;">Select reason</label>
+            <select name="reason" onchange="" id="reason" style="text-align: left;width:200px;;">
+                <option value="Unable to contact customer">Unable to contact customer</option>
+                <option value="The goods in stock are sold out">The goods in stock are sold out</option>
+                <option value="Product is being delivered to a wrong address">Product is being delivered to a wrong address</option>
+            </select>
+            <div class="model-footer">
+
+                <button onclick="CancelOrder(${id})" class="btn btn-green">Save</button>
+            </div>
+        `);
+        openModel();
+    }
+    function CancelOrder(id) {
+        $(".loading").show();
+        $(".loading_anim").html(
+            `
+                <div style="font-size:30px">Loading</div>
+                `
+        );
+        var reason = $('#reason').val();
+        setTimeout(function () {
+            $.ajax({
+                url: ROOT + `order/adminCancelOrder/${id}`,
+                type: 'PUT',
+                headers: {
+                    "Authorization": 'Bearer ' + token,
+                },
+                data: JSON.stringify({
+                    'reason': reason
+                }),
+                async: false
+            }).done(async function (data) {
+
+                var obj = JSON.parse(data);
+                var modal = document.getElementById("myModal");
+                modal.style.display = 'none';
+                await getDetailOrder();
+
+                $(".loading").hide();
+
+
+                successNotify();
+
+            }).fail(async function (data) {
+                $(".loading").hide();
+                var obj = JSON.parse(data['responseText']);
+                failNotify(obj['errors']);
+            });
+        }, 500);
     }
 
 
+    function successNotify() {
+        var elm = $(`
+          <div class="alert success">
+          <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+          <div>Success!</div>
+          
+          </div >
+          `);
+        $('.notification').prepend(elm);
+        setTimeout(function () {
+            elm.fadeOut(1000);
+        }, 2500);
+    }
+    function failNotify(errors) {
+        var elm = $(`
+          <div class="alert">
+          <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+          <div>${errors}</div>
+          
+          </div >
+          `);
+        $('.notification').prepend(elm);
+        setTimeout(function () {
+            elm.fadeOut(1000);
+        }, 2500);
+    }
 
 </script>
 <div id="header-tag">
@@ -154,6 +250,27 @@
 </div>
 
 <body>
+    <div class="notification">
+    </div>
+    <div id="myModal" class="modal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <span class="close" id="close">&times;</span>
+                <h1 style="margin:0;" id="modal-header">Model Header</h1>
+            </div>
+            <div class="modal-content">
+                <div class="" id="modal-content"></div>
+            </div>
+            <div class="modal-footer"></div>
+
+        </div>
+
+    </div>
+    <div class="loading" id="loading">
+        <div class="loading_anim" id="loading_anim">
+            <div style="font-size:30px">Loading...</div>
+        </div>
+    </div>
 
     <div class="container">
 
@@ -172,6 +289,9 @@
             <br>
             <div style="border-bottom: solid 1px white;width: 100%;"></div>
             <br>
+            <div style="text-align: right;" id="cancel-btn">
+
+            </div>
             <div class="" style="display:flex">
                 <div id="orderDetail" style="width:30%;align-self: center;padding-left: 50px;">
 

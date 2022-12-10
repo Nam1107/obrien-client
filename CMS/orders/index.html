@@ -17,7 +17,7 @@
     <script src="js/path.js"></script>
     <script src="js/pagination.js"></script>
     <script src="js/authLogin.js"></script>
-    <script src="js/authUser.js"></script>
+    <script src="js/authAdmin.js"></script>
 </head>
 
 <script>
@@ -55,9 +55,6 @@
         getListOrder();
         searchInput.on('keyup', function () {
             var orderID = $('#myInput').val();
-            if (orderID == '') {
-                return;
-            }
             $('#Order-Management').html('');
 
             $('#pagination').html(``);
@@ -86,24 +83,25 @@
                 `
         );
         var orderID = $('#myInput').val();
-        $.ajax({
-            url: ROOT + `order/adminListOrder?page=${curPage}&perPage=${perPage}&status=${status}&startDate=${startDate}&endDate=${endDate}&orderID=${orderID}`,
-            type: 'GET',
-            headers: {
-                "Authorization": 'Bearer ' + token,
-            },
-            async: false
-        }).done(function (data) {
-            var obj = JSON.parse(data);
+        setTimeout(function () {
+            $.ajax({
+                url: ROOT + `order/adminListOrder?page=${curPage}&perPage=${perPage}&status=${status}&startDate=${startDate}&endDate=${endDate}&orderID=${orderID}`,
+                type: 'GET',
+                headers: {
+                    "Authorization": 'Bearer ' + token,
+                },
+                async: false
+            }).done(function (data) {
+                var obj = JSON.parse(data);
 
-            var orderArr = obj.obj;
-            totalPage = obj.numOfPage;
-            curPage = obj.page
-            $('#Order-Management').html('');
-            $('#tag-notify').html('');
-            for (i = 0; i < orderArr.length; i++) {
-                var statusTag = orderArr[i].status.replace(/ /g, '');
-                var order = `
+                var orderArr = obj.obj;
+                totalPage = obj.numOfPage;
+                curPage = obj.page
+                $('#Order-Management').html('');
+                $('#tag-notify').html('');
+                for (i = 0; i < orderArr.length; i++) {
+                    var statusTag = orderArr[i].status.replace(/ /g, '');
+                    var order = `
                               <tr>
                                 <td>${i + 1 + (curPage - 1) * perPage}</td>
                                 <td>${orderArr[i].ID}</td>
@@ -117,34 +115,34 @@
                                 </td>
                               </tr>
                             `;
-                $('#Order-Management').append(
-                    order
-                )
-            }
-            if (orderArr.length <= 0) {
-                $('#tag-notify').html(
+                    $('#Order-Management').append(
+                        order
+                    )
+                }
+                if (orderArr.length <= 0) {
+                    $('#tag-notify').html(
 
-                    `<div style="padding: 20px;
+                        `<div style="padding: 20px;
         text-align: center;font-weight: bold;color: white;font-size: large;">Nothing to show</div>`
-                )
-            }
-            if (curPage > totalPage) {
-                curPage = totalPage;
-            }
-            $('#pagination').empty();
-            pagination(curPage, totalPage);
-            setTimeout(function () {
+                    )
+                }
+                if (curPage > totalPage) {
+                    curPage = totalPage;
+                }
+                $('#pagination').empty();
+                pagination(curPage, totalPage);
+
                 $("#loading").hide();
-            }, 1000);
 
 
-        }).fail(async function (data) {
-            var obj = JSON.parse(data['responseText']);
-            setTimeout(function () {
+
+            }).fail(async function (data) {
+                var obj = JSON.parse(data['responseText']);
                 $("#loading").hide();
-            }, 1000);
-            failNotify(obj['errors']);
-        });
+
+                failNotify(obj['errors']);
+            });
+        }, 500);
     }
     function selectStatus() {
         curPage = 1;

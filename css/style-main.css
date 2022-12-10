@@ -374,10 +374,16 @@ a {
     border-radius: 15px;
 }
 
+.modal-header {
+    font-size: 30px;
+    font-weight: bolder;
+}
+
 .modal-content {
     max-height: 450px;
     overflow: auto;
     padding: 0 5px;
+    padding-top: 15px;
 }
 
 .model-footer {
@@ -404,9 +410,9 @@ a {
 
 /* alert  */
 .notification {
-    padding: 20px;
+
     width: 20%;
-    top: 0;
+    top: 40px;
     right: 40px;
     position: fixed;
     z-index: 10;

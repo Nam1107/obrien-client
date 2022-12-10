@@ -1,0 +1,294 @@
+<script>
+    var token = localStorage.getItem('token');
+    var deliveryID = localStorage.getItem('deliveryID');
+
+    getDetailDelivery();
+
+    function getDetailDelivery() {
+        $.ajax({
+            url: ROOT + `delivery/getDetail/${deliveryID}`,
+            // url: ROOT + 'test/test',
+            type: 'GET',
+            headers: {
+                "Authorization": 'Bearer ' + token,
+            },
+            async: false
+        }).done(function (data) {
+            // var data1 = `{"id":111,"created_date":"2022-12-09 03:13:04","delivered_date":null,"status":"Processing","description":null,"shipper":{"ID":4,"email":"user2@gmail.com","phone":"123456","firstName":"HAHA","lastName":"123","name":"HAHA 123","avatar":"https:\/\/firebasestorage.googleapis.com\/v0\/b\/obrien-1482c.appspot.com\/o\/files%2Fdipper.png?alt=media&token=339fd039-592e-4f53-9f4d-cf9280b63983","role":"ROLE_SHIPPER"},"admin":{"ID":18,"email":"teenhainam2603@gmail.com","phone":null,"firstName":"","lastName":"Nam","name":"Nam","avatar":"https:\/\/staticfvvn.s3-ap-southeast-1.amazonaws.com\/fv4uploads\/uploads\/users\/4x\/6gl\/xtq\/avatar\/thumb_694526497374699.jpg","role":"ROLE_ADMIN"},"order":{"ID":1,"userID":14,"note":null,"phone":101042,"address":"\u0111\u01b0\u1eddng Thanh B\u00ecnh, M\u1ed9 Lao, H\u00e0 \u0110\u00f4ng, H\u00e0 N\u1ed9i","status":"To Receive","createdAt":"2022-10-11 18:05:38","total":"72000","numOfProduct":1,"user":{"ID":14,"email":"admin@gmail.com","password":"$2y$10$ozHLrLdVkIsxREPYG3DhOuf9KIgoDb0va9kbohCplrWFFBxlWuPTS","role":3,"phone":"0123456","firstName":"Alu","lastName":"Card","name":"Alu Card","avatar":"https:\/\/staticfvvn.s3-ap-southeast-1.amazonaws.com\/fv4uploads\/uploads\/users\/4x\/6gl\/xtq\/avatar\/thumb_694526497374699.jpg","createdAt":"2022-10-04 07:42:19","updatedAt":"2022-11-28 21:40:55"},"shipping":[{"description":"Order has been created","createdAt":"2022-12-09 01:23:21"},{"description":"Order is being shipped","createdAt":"2022-12-09 03:13:04"}],"product":[{"ID":2,"image":"https:\/\/firebasestorage.googleapis.com\/v0\/b\/obrien-1482c.appspot.com\/o\/files%2Fsweet_potatoes.jpg?alt=media&token=9ce69b29-5389-4261-8840-3f8d6990eaec","name":"Potato","unitPrice":12000,"quantity":6}]}}`;
+            var obj = JSON.parse(data);
+
+
+
+            var delivery = obj.delivery;
+            var statusDelivery = obj.status.replace(/ /g, '');
+            $('#delivery-id').html(`${obj.id}`);
+            $('#delivery-status').html(`<span class="statusTag ${statusDelivery}"> ${obj.status}</span>`);
+
+            // 
+
+            $('#delivery-detail').html(
+                `
+                <p>
+                        <span>Created date:</span>
+                        ${obj.created_date}
+                    </p>
+                    <p>
+                        <span>Delivered date:</span>
+                        ${obj.delivered_date}
+                    </p>
+                    <p>
+                        <span>Description:</span>
+                        ${obj.description}
+                    </p>
+                `
+            );
+            var orderArr = obj.order;
+            $('#order-total').html(`${orderArr.total}`);
+            var user = orderArr.user;
+            var productArr = orderArr.product;
+            var shipper = obj.shipper;
+            var shipping = orderArr.shipping;
+            var statusOrder = orderArr.status.replace(/ /g, '');
+            $('#order-id').html(`${orderArr.ID}`);
+            $('#order-status').html(`<span class="statusTag ${statusOrder}"> ${orderArr.status}</span>`);
+            $('#order-detail').html(
+                `
+                <p>
+                        <span>Name:</span>
+                        ${user.name}
+                    </p>
+                    <p>
+                        <span>Email:</span>
+                        ${user.email}
+                    </p>
+                    <p>
+                        <span>Phone:</span>
+                        ${orderArr.phone}
+                    </p>
+                    <p>
+                        <span>Address:</span>
+                        ${orderArr.address}
+                    </p>
+
+                    <p>
+                        <span>Note:</span>
+                        ${orderArr.note}
+                    </p>
+                `
+            );
+
+            $('#shipping-detail').html('');
+            for (i = 0; i < shipping.length; i++) {
+                var shippingStr = `
+                              <tr>
+                                <td>${shipping[i].createdAt}</td>
+                                <td style="text-align: left;">${shipping[i].description}</td>
+
+                              </tr>
+                            `;
+                $('#shipping-detail').append(
+                    shippingStr
+                )
+            }
+            $('#productDetail').html('');
+            for (i = 0; i < productArr.length; i++) {
+                var product = `
+                              <tr>
+                                <td>${i + 1}</td>
+                                <td>${productArr[i].ID}</td>
+                                
+                                <td>
+                                    <div class="product-img" ><img src="${productArr[i].image}" alt=""></div>
+                                </td>
+                                <td>${productArr[i].name}</td>
+                                <td>${productArr[i].unitPrice}</td>
+                                <td>${productArr[i].quantity}</td>
+                              </tr>
+                            `;
+                $('#productDetail').append(
+                    product
+                )
+            }
+            // $('#deliveryDetail').html('');
+            // for (i = 0; i < delivery.length; i++) {
+            //     var deliveryStr = `
+            //                   <tr>
+            //                     <td>${i + 1}</td>
+            //                     <td>${delivery[i].id}</td>
+            //                     <td>${delivery[i].departed_date}</td>
+            //                     <td>${delivery[i].delivered_date}</td>
+            //                     <td><span class="statusTag ${delivery[i].status}">${delivery[i].status}</span></td>
+            //                     <td>${delivery[i].description}</td>
+            //                     <td>
+            //                         <button class="btn btn-info" onclick="getShipper(${delivery[i].shipper_id})" >Show Shipper</button>
+            //                     </td>
+            //                   </tr>
+            //                 `;
+            //     $('#deliveryDetail').append(
+            //         deliveryStr
+            //     )
+            // }
+        }).fail(async function (data) {
+            var obj = JSON.parse(data['responseText']);
+            console.log(obj);
+        });
+    }
+    function getShipper(id) {
+        window.open(PATH + `cmsShipper/shippers/detail.html?shipperID=${id}`, "_self");
+    }
+
+
+
+</script>
+
+
+<div class="tag-label" style="display: flex;">
+    <div style="width: 50%;">
+        Delivery Information
+    </div>
+    <div style="width: 50%;text-align-last: right;">
+        DELIVERY ID: <span style="color:red;margin-right: 10px;" id="delivery-id">Undefined</span> |
+        <span id="delivery-status"></span>
+        <!-- <span class="statusTag ToReceive">To Receive</span> -->
+    </div>
+
+</div>
+<div style="border-bottom: solid 1px white;width: 100%;"></div>
+<br>
+<div class="" style="display:flex">
+    <div id="delivery-detail" style="align-self: left;">
+
+
+        <p>
+            <span>Name:</span>
+
+        </p>
+        <p>
+            <span>Email:</span>
+
+        </p>
+        <p>
+            <span>Phone:</span>
+
+        </p>
+        <p>
+            <span>Address:</span>
+
+        </p>
+
+        <p>
+            <span>Note:</span>
+
+        </p>
+
+    </div>
+
+</div>
+<div class="tag-label" style="display: flex;">
+    <div style="width: 50%;">
+        Order Information
+    </div>
+    <div style="width: 50%;text-align-last: right;">
+        OREDER ID: <span style="color:red;margin-right: 10px;" id="order-id">Undefined</span> |
+        <span id="order-status"></span>
+        <!-- <span class="statusTag ToReceive">To Receive</span> -->
+    </div>
+</div>
+
+<div style="border-bottom: solid 1px white;width: 100%;"></div>
+<br>
+<div class="" style="display:flex;">
+    <div id="order-detail" style="width:40%;align-self: left;">
+
+
+        <p>
+            <span>Name:</span>
+
+        </p>
+        <p>
+            <span>Email:</span>
+
+        </p>
+        <p>
+            <span>Phone:</span>
+
+        </p>
+        <p>
+            <span>Address:</span>
+
+        </p>
+
+        <p>
+            <span>Note:</span>
+
+        </p>
+
+    </div>
+    <div style="width:60%;">
+        <div class="tag-label">
+            Shipping Information
+        </div>
+        <div class="tableWrapper">
+            <table class="">
+                <div>
+                    <tbody id="shipping-detail">
+                    </tbody>
+                </div>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="tag-label">
+    Product List
+</div>
+<div class="tableWrapper">
+    <table class="">
+        <thead>
+            <tr>
+                <th>STT</th>
+                <th>Product ID</th>
+                <th>Image</th>
+                <th>Name</th>
+                <th>Unit Price</th>
+                <th>Quantity</th>
+            </tr>
+        </thead>
+        <div>
+            <tbody id="productDetail">
+            </tbody>
+        </div>
+    </table>
+    <br><br>
+    <div style="display: flex;font-size: 15px;font-weight: bold;">
+        <div style="width: 80%;text-align: right;    ">Order Total</div>
+        <div id="order-total" style="width: 20%;text-align: center;font-size: 25px;color:red;">113</div>
+    </div>
+
+
+</div>
+<!-- 
+<div class="tag-label">
+    Delivery Information
+</div>
+<div class="tableWrapper">
+    <table class="">
+        <thead>
+            <tr>
+                <th>STT</th>
+                <th>Delivery ID</th>
+                <th>Departed Date</th>
+                <th>Delivered Date</th>
+                <th>Status</th>
+                <th>Description</th>
+                <th>Option</th>
+            </tr>
+        </thead>
+        <div>
+            <tbody id="deliveryDetail">
+
+            </tbody>
+        </div>
+    </table> -->
+
+</div>

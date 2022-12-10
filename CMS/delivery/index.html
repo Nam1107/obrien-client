@@ -17,7 +17,7 @@
     <script src="js/path.js"></script>
     <script src="js/pagination.js"></script>
     <script src="js/authLogin.js"></script>
-    <script src="js/authUser.js"></script>
+    <script src="js/authAdmin.js"></script>
 </head>
 
 <script>
@@ -66,9 +66,6 @@
 
         searchInput.on('keyup', function () {
             var orderID = $('#myInput').val();
-            if (orderID == '') {
-                return;
-            }
             $('#Order-Management').html('');
             $('#tag-order-notify').html(`
 
@@ -268,27 +265,38 @@
             alert('Please select shipper first');
             return;
         }
-        $.ajax({
-            url: ROOT + `delivery/createDelivery`,
-            type: 'POST',
-            headers: {
-                "Authorization": 'Bearer ' + token,
-            },
-            data: JSON.stringify({
-                'order_id': id,
-                'shipper_id': shipperID,
-            }),
-            async: false
-        }).done(function (data) {
-            var obj = JSON.parse(data);
-            getListOrder();
-            getListDelivery();
+        $("#loading").show();
+        $("#loading_anim").html(
+            `
+                <div style="font-size:30px">Loading</div>
+                `
+        );
+        setTimeout(function () {
+            $.ajax({
+                url: ROOT + `delivery/createDelivery`,
+                type: 'POST',
+                headers: {
+                    "Authorization": 'Bearer ' + token,
+                },
+                data: JSON.stringify({
+                    'order_id': id,
+                    'shipper_id': shipperID,
+                }),
+                async: false
+            }).done(function (data) {
+                var obj = JSON.parse(data);
+                getListOrder();
+                getListDelivery();
+                $("#loading").hide();
 
-        }).fail(async function (data) {
-            var obj = JSON.parse(data['responseText']);
-            alert(obj);
-        });
+            }).fail(async function (data) {
+                $("#loading").hide();
+                var obj = JSON.parse(data['responseText']);
+                alert(obj);
+            });
+        }, 500);
     }
+
 
 
 </script>
@@ -297,7 +305,13 @@
 </div>
 
 <body>
-
+    <div class="notification">
+    </div>
+    <div class="loading" id="loading">
+        <div class="loading_anim" id="loading_anim">
+            <div style="font-size:30px">Loading...</div>
+        </div>
+    </div>
     <div class="container">
         <div style="font-size: 25px;font-weight: bold;text-align: center;padding: 20px 0;">Delivery Management</div>
 
